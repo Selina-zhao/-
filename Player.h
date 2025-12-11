@@ -10,7 +10,7 @@ public:
     Player(const Point& startPos, const std::string& charTexPath, int frameCols = 3, int frameRows = 4)
         : pos(startPos), lavaStepCount(0), baseSpeed(5.0f), currentSpeed(baseSpeed),
         frameCols(frameCols), frameRows(frameRows), currFrame(0), currDir(Direction::DOWN),
-        timer(0.0f), frameTime(0.3f), footOffsetY(5.0f) { // footOffsetY：脚部偏移（可调整）
+        timer(0.0f), frameTime(0.3f), footOffsetY(2.0f) { // footOffsetY：脚部偏移（可调整）
         // 1. 加载精灵图（含所有方向+帧）
         Image spriteSheet = LoadImage(charTexPath.c_str());
         if (spriteSheet.data == nullptr) {
@@ -35,6 +35,7 @@ public:
         // 6. 初始化脚部碰撞检测区域（基于精灵图尺寸）
         footCollisionWidth = frameWidth * 0.5f; // 脚部碰撞宽度（精灵图宽度的50%，避免过宽）
         footCollisionHeight = 4.0f;            // 脚部碰撞高度（4像素，模拟脚底）
+
     }
 
     // 析构：释放纹理资源
@@ -65,6 +66,8 @@ public:
 
     Point getPosition() const { return pos; }
     int getLavaStepCount() const { return lavaStepCount; }
+
+
 
 private:
     // 移动方向枚举（匹配精灵图：0=下、1=左、2=右、3=上）
