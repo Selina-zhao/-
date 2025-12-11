@@ -5,6 +5,7 @@
 #include "PathFinder.h"
 #include "TextureManager.h"
 #include "MazeRenderer.h"
+#include "raylib.h" // 新增：需要包含raylib头文件以使用Texture2D
 
 enum class GameState {
     START_SCREEN,  // 开始界面
@@ -15,14 +16,11 @@ enum class GameState {
 
 class GameManager {
 public:
-    // 构造：新增小人纹理路径参数（传递给Player）
-    GameManager(const Maze& maze, const TextureManager& texManager, const std::string& playerTexPath)
-        : maze(maze), texManager(texManager),
-        // 调用修改后的Player构造函数，传入起点和小人纹理路径
-        player(findStartPoint(maze), playerTexPath),
-        pathFinder(maze),
-        gameState(GameState::START_SCREEN) {
-    }
+    // 构造函数声明（保持不变）
+    GameManager(const Maze& maze, const TextureManager& texManager, const std::string& playerTexPath);
+
+    // 新增：析构函数声明
+    ~GameManager();
 
     // 处理输入（逻辑不变）
     void handleInput();
@@ -37,6 +35,7 @@ private:
     Player player;
     PathFinder pathFinder;
     GameState gameState;
+    Texture2D startBgTexture; // 存储背景图纹理
 
     // 查找迷宫起点（逻辑不变）
     Point findStartPoint(const Maze& maze) const {

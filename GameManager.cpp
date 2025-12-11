@@ -1,6 +1,26 @@
 #include "GameManager.h"
 #include "raylib.h"
 #include <string>
+#include <stdexcept>
+
+// 构造函数：将头文件中的实现移到这里，同时加载背景图
+GameManager::GameManager(const Maze& maze, const TextureManager& texManager, const std::string& playerTexPath)
+    : maze(maze), texManager(texManager),
+    player(findStartPoint(maze), playerTexPath),
+    pathFinder(maze),
+    gameState(GameState::START_SCREEN),
+    // 加载开始界面背景图（使用你的绝对路径）
+    startBgTexture(LoadTexture("C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\start_bg.png")) {
+    // 检查背景图是否加载成功
+    if (startBgTexture.id == 0) {
+        throw std::runtime_error("Failed to load start screen background: C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\start_bg.png");
+    }
+}
+
+// 析构函数：释放背景图纹理
+GameManager::~GameManager() {
+    UnloadTexture(startBgTexture);
+}
 
 // 处理按键输入（保持不变）
 void GameManager::handleInput() {
@@ -46,7 +66,7 @@ void GameManager::update(float deltaTime) {
     }
 }
 
-// 绘制游戏内容（修复WIN分支作用域问题）
+// 绘制游戏内容（核心修改：背景图绘制顺序提前，文本在后）
 void GameManager::draw() const {
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -57,32 +77,48 @@ void GameManager::draw() const {
         int screenCenterX = GetScreenWidth() / 2;
         int screenCenterY = GetScreenHeight() / 2;
 
+        // 绘制位置：X=0，Y=0（窗口左上角）
+        int bgX = 0;
+        int bgY = 0;
+        // 使用DrawTexturePro强制让背景图适配窗口尺寸（即使图片尺寸不对也能铺满）
+        Rectangle sourceRec = { 0.0f, 0.0f, (float)startBgTexture.width, (float)startBgTexture.height };
+        Rectangle destRec = { 0.0f, 0.0f, (float)GetScreenWidth(), (float)GetScreenHeight() };
+        DrawTexturePro(startBgTexture, sourceRec, destRec, Vector2{ 0, 0 }, 0.0f, WHITE);
+
+        // ========== 然后绘制所有文本（文本会显示在背景图上方） ==========
         // 2. 标题文本："MAZE GAME"（40号字体）
-        const char* titleText = "MAZE GAME";
+        const char* titleText = "* MAZE GAME *";
         int titleFontSize = 40;
         // 计算文本宽度（关键：通过MeasureText获取文本实际宽度）
         int titleWidth = MeasureText(titleText, titleFontSize);
         // 计算文本左上角坐标（中心X - 文本宽度/2，垂直向上偏移50像素）
         int titleX = screenCenterX - titleWidth / 2;
-        int titleY = screenCenterY - 50;
+        int titleY = screenCenterY - 90;
         // 绘制标题（深蓝色，醒目）
         DrawText(titleText, titleX, titleY, titleFontSize, DARKBLUE);
 
         // 3. 开始提示："Press SPACE to Start"（20号字体）
-        const char* startText = "Press SPACE to Start";
+        const char* startText = "~ Press SPACE to Start ~";
         int startFontSize = 20;
         int startWidth = MeasureText(startText, startFontSize);
         int startX = screenCenterX - startWidth / 2;
-        int startY = screenCenterY + 20; // 垂直向下偏移20像素
-        DrawText(startText, startX, startY, startFontSize, GRAY);
+        int startY = screenCenterY + 0; // 垂直向下偏移0像素
+        DrawText(startText, startX, startY, startFontSize, DARKGRAY);
 
-        // 4. 规则提示："Press R to Reset | Avoid Lava (2 steps = Game Over)"（16号字体）
-        const char* ruleText = "Press R to Reset | Avoid Lava (2 steps = Game Over)";
-        int ruleFontSize = 16;
+        // 4. 规则提示："Press R to Reset"（20号字体）
+        const char* ruleText = "~ Press R to Reset ~";
+        int ruleFontSize = 20;
         int ruleWidth = MeasureText(ruleText, ruleFontSize);
         int ruleX = screenCenterX - ruleWidth / 2;
-        int ruleY = screenCenterY + 50; // 垂直向下偏移50像素
-        DrawText(ruleText, ruleX, ruleY, ruleFontSize, LIGHTGRAY);
+        int ruleY = screenCenterY + 40; // 垂直向下偏移40像素
+        DrawText(ruleText, ruleX, ruleY, ruleFontSize, DARKGRAY);
+
+        const char* ruleText1 = "!! Avoid Lava (2 steps = Game Over) !!";
+        int ruleFontSize1 = 20;
+        int ruleWidth1 = MeasureText(ruleText1, ruleFontSize1);
+        int ruleX1 = screenCenterX - ruleWidth1 / 2;
+        int ruleY1 = screenCenterY + 80; // 垂直向下偏移80像素
+        DrawText(ruleText1, ruleX1, ruleY1, ruleFontSize1, RED);
 
         break;
     }
@@ -117,7 +153,7 @@ void GameManager::draw() const {
         int winFontSize = 32;
         int winTextWidth = MeasureText(winText, winFontSize);
         int winTextX = winRectCenterX - winTextWidth / 2;
-        int winTextY = winRectCenterY - 40;
+        int winTextY = winRectCenterY - 45;
         DrawText(winText, winTextX, winTextY, winFontSize, WHITE);
 
         // 2. Press R to Restart 文本
@@ -125,7 +161,7 @@ void GameManager::draw() const {
         int winRestartFontSize = 18;
         int winRestartWidth = MeasureText(winRestartText, winRestartFontSize);
         int winRestartX = winRectCenterX - winRestartWidth / 2;
-        int winRestartY = winRectCenterY + 10;
+        int winRestartY = winRectCenterY + 5;
         DrawText(winRestartText, winRestartX, winRestartY, winRestartFontSize, WHITE);
 
         // 3. Press ESC to Exit 文本
@@ -133,7 +169,7 @@ void GameManager::draw() const {
         int winExitFontSize = 18;
         int winExitWidth = MeasureText(winExitText, winExitFontSize);
         int winExitX = winRectCenterX - winExitWidth / 2;
-        int winExitY = winRectCenterY + 30;
+        int winExitY = winRectCenterY + 35;
         DrawText(winExitText, winExitX, winExitY, winExitFontSize, WHITE);
         break;
     }

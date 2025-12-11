@@ -14,7 +14,6 @@ void readMap(const string& filename)
 	// 逐行读取数据
 	string line;
 	int a, b;
-	get
 
 }
 
