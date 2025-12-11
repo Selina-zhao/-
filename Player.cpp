@@ -149,9 +149,9 @@ void Player::draw() const {
     // （调试用）绘制脚部碰撞盒（绿色半透明，可注释）
     float footX = pixelPos.x + (frameWidth - footCollisionWidth) / 2;
     float footY = pixelPos.y + frameHeight - footCollisionHeight - footOffsetY;
-    DrawRectangle(
-        static_cast<int>(footX), static_cast<int>(footY),
-        static_cast<int>(footCollisionWidth), static_cast<int>(footCollisionHeight),
-        Color{ 0, 255, 0, 100 } // 绿色半透明
-    );
+    //DrawRectangle(
+    //    static_cast<int>(footX), static_cast<int>(footY),
+    //    static_cast<int>(footCollisionWidth), static_cast<int>(footCollisionHeight),
+    //    Color{ 0, 255, 0, 100 } // 绿色半透明
+    //);
 }

@@ -66,7 +66,7 @@ void GameManager::draw() const {
             break;
 
         case GameState::PLAYING:
-            // 绘制层级：仅迷宫 + 小人（无路径颜色标注）
+            // 绘制层级：仅迷宫 + 小人
             MazeRenderer::drawMaze(maze, texManager);
             player.draw();
 
