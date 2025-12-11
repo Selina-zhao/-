@@ -13,7 +13,8 @@ Maze MazeParser::loadFromFile(const std::string& filePath) {
     // 第一步：读取行数和列数（第一行）
     file >> maze.rows >> maze.cols;
     if (maze.rows <= 0 || maze.cols <= 0) {
-        throw std::runtime_error("Invalid maze size: rows=" + std::to_string(maze.rows) + ", cols=" + std::to_string(maze.cols));
+        throw std::runtime_error("Invalid maze size: rows=" + std::to_string(maze.rows) +
+            ", cols=" + std::to_string(maze.cols));
     }
 
     // 第二步：读取后续地块数据
@@ -22,7 +23,8 @@ Maze MazeParser::loadFromFile(const std::string& filePath) {
     for (int row = 0; row < maze.rows; ++row) {
         for (int col = 0; col < maze.cols; ++col) {
             if (!(file >> num)) {
-                throw std::runtime_error("Maze data incomplete at row=" + std::to_string(row) + ", col=" + std::to_string(col));
+                throw std::runtime_error("Maze data incomplete at row=" + std::to_string(row) +
+                    ", col=" + std::to_string(col));
             }
             maze.mapData[row][col] = numToBlockType(num);
         }

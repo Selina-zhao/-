@@ -1,24 +1,29 @@
-#include "PathFinder.h"
-#include "MazeRenderer.h"
+#include "MazeParser.h"
+#include "TextureManager.h"
+#include "GameManager.h"
 #include "raylib.h"
 #include <iostream>
 
 int main() {
     try {
-        // 1. 配置迷宫尺寸（基于BLOCK_SIZE和迷宫行列数）
-        const int MAZE_ROWS = 20;  // maze0.txt为10行10列
-        const int MAZE_COLS = 20;
-        const int WINDOW_WIDTH = /*MAZE_COLS * MazeRenderer::BLOCK_SIZE*/640;
-        const int WINDOW_HEIGHT = /*MAZE_ROWS * MazeRenderer::BLOCK_SIZE*/640;
+        // ================= 基础配置 =================
+        const int WINDOW_WIDTH = 640;
+        const int WINDOW_HEIGHT = 640;
+        const std::string MAZE_FILE = "./maze0.txt";
+        // 新小人纹理路径
+        const std::string PLAYER_TEX_PATH = "C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\character.png";
 
-        // 2. 初始化Raylib窗口
-        InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Maze Game");
-        SetTargetFPS(60); // 设置帧率
+        // ================= 初始化窗口 =================
+        InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Maze Game - Full Task");
+        SetTargetFPS(60);
 
-        // 3. 加载迷宫数据（替换为你的maze0.txt路径）
-        Maze maze = MazeParser::loadFromFile("./maze0.txt");
+        // ================= 加载迷宫 =================
+        Maze maze = MazeParser::loadFromFile(MAZE_FILE);
+        if (maze.rows != 20 || maze.cols != 20) {
+            throw std::runtime_error("Maze must be 20×20 (task requirement)!");
+        }
 
-        // 4. 配置纹理路径并加载纹理
+        // ================= 配置纹理路径 =================
         std::unordered_map<BlockType, std::string> texPaths = {
             {BlockType::WALL,    "./resource/wall.png"},
             {BlockType::START,   "./resource/start.png"},
@@ -27,37 +32,28 @@ int main() {
             {BlockType::GRASS,   "./resource/grass.png"},
             {BlockType::LAVA,    "./resource/lava.png"}
         };
+
+        // ================= 加载纹理 =================
         TextureManager texManager(texPaths);
 
-        // 3. 路径计算
-        PathFinder pathFinder(maze);
-        std::vector<std::vector<Point>> allPaths = pathFinder.findAllPathsByDFS(); // 所有可达路径
-        std::vector<Point> dijkstraPath = pathFinder.findShortestPath(); // Dijkstra最短路径
+        // ================= 初始化游戏管理器：传入小人纹理路径 =================
+        GameManager gameManager(maze, texManager, PLAYER_TEX_PATH);
 
-         //日志输出（调试用）
-        TraceLog(LOG_INFO, "找到%d条可达终点的路径", allPaths.size());
-        TraceLog(LOG_INFO, "Dijkstra最短路径步数：%d", dijkstraPath.size());
-
-        // 4. 主循环
+        // ================= 主循环 =================
         while (!WindowShouldClose()) {
-            BeginDrawing();
-            ClearBackground(RAYWHITE);
-
-            // 绘制层级：先迷宫 → 再所有路径（蓝色） → 最后Dijkstra路径（红色，置顶）
-            MazeRenderer::drawMaze(maze, texManager);
-            MazeRenderer::drawAllDFSPaths(allPaths);
-            MazeRenderer::drawDijkstraPath(dijkstraPath);
-
-            EndDrawing();
+            gameManager.handleInput();
+            gameManager.update(GetFrameTime());
+            gameManager.draw();
         }
 
-        // 资源释放
+        // ================= 资源释放 =================
         CloseWindow();
     }
     catch (const std::exception& e) {
-        TraceLog(LOG_ERROR, "错误：%s", e.what());
+        TraceLog(LOG_ERROR, "Error: %s", e.what());
         system("pause");
         return -1;
     }
+
     return 0;
 }

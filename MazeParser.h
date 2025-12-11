@@ -1,6 +1,5 @@
 #ifndef MAZE_PARSER_H
 #define MAZE_PARSER_H
-
 #include <string>
 #include <vector>
 #include <stdexcept>

@@ -1,6 +1,5 @@
 #ifndef TEXTURE_MANAGER_H
 #define TEXTURE_MANAGER_H
-
 #include "raylib.h"
 #include "MazeParser.h"
 #include <unordered_map>
@@ -12,7 +11,6 @@ class TextureManager {
 public:
     // 构造：加载所有纹理（传入纹理路径映射表）
     TextureManager(const std::unordered_map<BlockType, std::string>& texPaths);
-
     // 析构：释放所有加载的纹理
     ~TextureManager();
 

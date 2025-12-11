@@ -131,17 +131,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MazeParser.cpp" />
     <ClCompile Include="MazeRenderer.cpp" />
     <ClCompile Include="PathFinder.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="MazeParser.h" />
     <ClInclude Include="MazeRenderer.h" />
     <ClInclude Include="PathFinder.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
