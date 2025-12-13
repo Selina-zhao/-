@@ -9,11 +9,11 @@ GameManager::GameManager(const Maze& maze, const TextureManager& texManager, con
     player(findStartPoint(maze), playerTexPath),
     pathFinder(maze),
     gameState(GameState::START_SCREEN),
-    // 加载开始界面背景图（使用你的绝对路径）
-    startBgTexture(LoadTexture("C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\start_bg.png")) {
+    // 加载开始界面背景图
+    startBgTexture(LoadTexture("./resource/start_bg.png")) {
     // 检查背景图是否加载成功
     if (startBgTexture.id == 0) {
-        throw std::runtime_error("Failed to load start screen background: C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\start_bg.png");
+        throw std::runtime_error("Failed to load start screen background: ./resource/start_bg.png");
     }
 }
 
@@ -128,8 +128,8 @@ void GameManager::draw() const {
         MazeRenderer::drawMaze(maze, texManager);
         player.draw();
         // 简化UI提示（保持不变）
-        DrawText(("Lava Steps: " + std::to_string(player.getLavaStepCount()) + "/2").c_str(), 10, 10, 16, RED);
-        DrawText("WASD/Arrow Keys to Move", 10, 40, 14, GRAY);
+        DrawText(("Lava Steps: " + std::to_string(player.getLavaStepCount()) + "/2").c_str(), 10, 8, 16, RED);
+        //DrawText("WASD/Arrow Keys to Move", 10, 40, 14, GRAY);
         break;
 
         // 核心修复：给WIN分支加上大括号，形成局部作用域

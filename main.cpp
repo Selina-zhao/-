@@ -11,7 +11,7 @@ int main() {
         const int WINDOW_HEIGHT = 640;
         const std::string MAZE_FILE = "./maze0.txt";
         // 新小人纹理路径
-        const std::string PLAYER_TEX_PATH = "C:\\Users\\Selina\\Desktop\\迷宫小游戏 (2)\\迷宫小游戏\\resource\\character.png";
+        const std::string PLAYER_TEX_PATH = "./resource/character.png";
 
         // ================= 初始化窗口 =================
         InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Maze Game - Full Task");
