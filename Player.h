@@ -30,7 +30,7 @@ public:
         // 5. 初始化像素坐标（居中显示在32×32地块上）
         pixelPos = {
             MazeRenderer::getBlockPosition(pos.row, pos.col).x + (MazeRenderer::BLOCK_SIZE - frameWidth) / 2,
-            MazeRenderer::getBlockPosition(pos.row, pos.col).y + (MazeRenderer::BLOCK_SIZE - frameHeight) / 2-7.0f
+            MazeRenderer::getBlockPosition(pos.row, pos.col).y + (MazeRenderer::BLOCK_SIZE - frameHeight) / 2-9.0f
         };
         // 6. 初始化脚部碰撞检测区域（基于精灵图尺寸）
         footCollisionWidth = frameWidth * 0.5f; // 脚部碰撞宽度（精灵图宽度的50%，避免过宽）
